@@ -30,7 +30,8 @@
             align-items: center;
             width: 100%;
         }
-        .card{
+
+        .card {
             background-color: rgb(205, 210, 210);
         }
     </style>
@@ -40,7 +41,7 @@
     <div class="top">
         <div class="card w-100">
             <h1>Register</h1>
-            <form action="/api/user/" method="POST" class="w-60">
+            <form method="POST" class="w-60" id="registerForm">
                 <div class="mb-3 p-3">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" class="form-control" id="name" name="name" required>
@@ -67,6 +68,39 @@
         function goToLogin() {
             window.location.href = "/";
         }
+        const registerForm = document.getElementById('registerForm');
+
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const data = {
+                        "name": name,
+                        "email": email,
+                        "password": password
+                    }
+            fetch('/api/user/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.status == 201)
+                    {
+                        alert(data.data);
+                        window.location.href = "/";
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error(error);
+                });           
+        });
     </script>
 </body>
 

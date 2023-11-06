@@ -5,38 +5,43 @@
     <title>Login</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body{
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100vw;
             height: 100vh;
         }
-        .top{
+
+        .top {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 60%;
         }
-        h1{
+
+        h1 {
             text-align: center;
         }
-        .bt_pan{
+
+        .bt_pan {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
         }
-        .card{
+
+        .card {
             background-color: rgb(205, 210, 210);
         }
     </style>
 </head>
+
 <body>
     <div class="top">
         <div class="card w-100">
             <h1>Login</h1>
-            <form action="/api/user/login" method="POST" class="w-60">
+            <form id = "loginForm" method="POST" class="w-60">
                 <div class="mb-3 p-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" name="email" required>
@@ -57,6 +62,35 @@
         function goToRegister() {
             window.location.href = "/register";
         }
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const data = {
+                "email": email,
+                "password": password
+            }
+            fetch('/api/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status == 200) {
+                        alert("wlcome to our system!");
+                        localStorage.setItem('login_jwtToken', "Bearer "+ data.jwt);
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error(error);
+                });
+        });
     </script>
 </body>
 
